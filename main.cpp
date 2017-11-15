@@ -34,16 +34,20 @@ int main(int argc, const char *argv[]) {
 	int res = player->alocarMemoria();
 	if (res < 0) {
 		cout << "Fatal Error";
+		delete(player);
 		exit(-1);
 	}
 
 	res= player->criarDisplay();
-	
+
 	res = player->lerFramesVideo();
 	if (res < 0) {
 		cout << "Shit happens" << endl;
+		delete(player);
 		exit(-1);
 	}
+
+	delete(player);
 
 	return 0;
 }
