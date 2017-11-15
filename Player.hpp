@@ -1,10 +1,11 @@
-#pragma once
+#define ERROR_SIZE 128
+//define o formato do frame AV_PIX_FMT_RGB24 ou AV_PIX_FMT_YUV480P
+#define FORMATO AV_PIX_FMT_RGB24
+
 #include <iostream>
 #include <string>
-
 #include "opencv/cv.h"
 #include "opencv/highgui.h"
-
 #include "opencv2/core.hpp"
 #include "opencv2/face.hpp"
 #include "opencv2/highgui.hpp"
@@ -26,23 +27,65 @@ extern "C"
 #include <libavutil/frame.h>
 #include <libavutil/imgutils.h>
 }
-
-#define ERROR_SIZE 128
-
-//define o formato do frame AV_PIX_FMT_RGB24 ou AV_PIX_FMT_YUV480P
-#define FORMATO AV_PIX_FMT_RGB24
-
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_thread.h"
 #include <thread>
 #include <chrono> 
 
 class Player {
+
 public:
+	
+	//construtor
+	Player(std::string endereco) {
 
-	Player(std::string endereco);
-	~Player(void);
+		//init ffmpeg
+		av_register_all();
 
+		//open video
+		int res = avformat_open_input(&pFormatCtx, endereco.c_str(), NULL, NULL);
+
+		//check video opened
+		if (res!=0){
+			exibirErro(res);
+			exit(-1);
+		}
+
+		//get video info
+		res = avformat_find_stream_info(pFormatCtx, NULL);
+		if (res < 0) {
+			exibirErro(res);
+			exit(-1);
+		}
+
+		//get video stream
+		videoStream = obterCodecParameters();
+		if (videoStream == -1) {
+			std::cout << "Error opening your video using AVCodecParameters, does not have codecpar_type type AVMEDIA_TYPE_VIDEO" << std::endl;
+			exit(-1);
+		}
+
+		if (lerCodecVideo() < 0) exit(-1);
+
+	}
+
+	~Player(void) {
+
+		av_free(buffer);
+		av_free(pFrameRGB);
+
+		// Free the YUV frame
+		av_free(pFrame);
+
+		// Close the codecs
+		avcodec_close(pCodecCtx);
+
+		// Close the video file
+		avformat_close_input(&pFormatCtx);
+
+	}
+
+	
 	void exibirInformacaoArquivoVideo(void);
 	int alocarMemoria(void);
 	int lerFramesVideo(void);

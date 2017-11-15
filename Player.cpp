@@ -2,55 +2,6 @@
 
 using namespace std;
 using namespace cv;
-//construtor
-Player::Player(string endereco) {
-
-	//inicializa��o do ffmpeg
-	av_register_all();
-
-	//abre o v�deo
-	int res = avformat_open_input(&pFormatCtx, endereco.c_str(), NULL, NULL);
-
-	// Abrir o arquivo de v�deo
-	if (res!=0){
-		exibirErro(res);
-		return;
-	}
-
-	//obtem informa��o sobre o stream
-	res = avformat_find_stream_info(pFormatCtx, NULL);
-	if (res < 0) {
-		exibirErro(res);
-		return;
-	}
-
-	//obtem o stream do video
-	videoStream = obterCodecParameters();
-	if (videoStream == -1) {
-		cout << "Erro ao obter o stream do video em AVCodecParameters, nao tem codecpar_type do tipo AVMEDIA_TYPE_VIDEO" << endl;
-		return;
-	}
-
-	if (lerCodecVideo() < 0) return;
-		
-
-}
-
-Player::~Player(void) {
-
-	av_free(buffer);
-	av_free(pFrameRGB);
-
-	// Free the YUV frame
-	av_free(pFrame);
-
-	// Close the codecs
-	avcodec_close(pCodecCtx);
-
-	// Close the video file
-	avformat_close_input(&pFormatCtx);
-
-}
 
 //exibe informa��o dos streams do arquivo de v�deo espec�fico
 void Player::exibirInformacaoArquivoVideo(void) {
@@ -58,7 +9,6 @@ void Player::exibirInformacaoArquivoVideo(void) {
 	av_dump_format(pFormatCtx, 0, pFormatCtx->filename, 0);
 
 }
-
 
 //exibe o erro, descrevendo-o
 void Player::exibirErro(int erro) {
