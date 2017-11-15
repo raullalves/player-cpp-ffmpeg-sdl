@@ -19,11 +19,16 @@ using namespace chrono;
 
 int main(int argc, const char *argv[]) {
 
+	if(argc != 2){
+		cout << "Usage: ./player video_addr"<<endl;
+		exit(-1);
+	}
+	
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER)) {
 		cout << "Erro ao fazer o load do SDL!!! Verificar libs e dll, ver x64 ou x86" << endl;
 		return -1;
 	}
-
+	
 	Player * player = new Player(argv[1]);
 	
 	int res = player->alocarMemoria();

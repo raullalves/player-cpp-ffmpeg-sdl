@@ -26,58 +26,45 @@ extern "C"
 #include <libavutil/frame.h>
 #include <libavutil/imgutils.h>
 }
-#pragma comment(lib, "avcodec.lib")
-#pragma comment(lib, "avdevice.lib")
-#pragma comment(lib, "avfilter.lib")
-#pragma comment(lib, "avformat.lib")
-#pragma comment(lib, "avutil.lib")
-#pragma comment(lib, "swresample.lib")
-#pragma comment(lib, "swscale.lib")
-
 
 #define ERROR_SIZE 128
 
 //define o formato do frame AV_PIX_FMT_RGB24 ou AV_PIX_FMT_YUV480P
 #define FORMATO AV_PIX_FMT_RGB24
 
-#include "SDL.h"
-#include <SDL_thread.h>     // std::cout, std::endl
-#include <thread>         // std::this_thread::sleep_for
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_thread.h"
+#include <thread>
 #include <chrono> 
-
-using namespace std;
-using namespace cv;
-
 
 class Player {
 public:
 
-	Player(string endereco);
+	Player(std::string endereco);
 	~Player(void);
 
 	void exibirInformacaoArquivoVideo(void);
 	int alocarMemoria(void);
 	int lerFramesVideo(void);
-	//cria display com STL
 	int criarDisplay(void);
 
 private:
 
-	//armazena o índice do determinado Stream a ser transmitido
+	//armazena o ï¿½ndice do determinado Stream a ser transmitido
 	int videoStream;
 
-	//contem informações sobre o arquivo de vídeo, incluindo os codecs, etc
+	//contem informaï¿½ï¿½es sobre o arquivo de vï¿½deo, incluindo os codecs, etc
 	AVFormatContext *pFormatCtx = NULL;
 
-	//contem informações do codec do vídeo, obtidas atraves de
+	//contem informaï¿½ï¿½es do codec do vï¿½deo, obtidas atraves de
 	//pFormatCtx->streams[i]->codecpar
-	//olhando o codec_type e vendo se é transmissao de video do tipo AVMEDIA_TYPE_VIDEO
+	//olhando o codec_type e vendo se ï¿½ transmissao de video do tipo AVMEDIA_TYPE_VIDEO
 	AVCodecParameters *pCodecParameters = NULL;
 
-	//informações do codecParameters, porém copiadas. o pCodecParameters serve como um backup das informações do vídeo
+	//informaï¿½ï¿½es do codecParameters, porï¿½m copiadas. o pCodecParameters serve como um backup das informaï¿½ï¿½es do vï¿½deo
 	AVCodecContext *pCodecCtx = NULL;
 
-	//guarda o codec do vídeo
+	//guarda o codec do vï¿½deo
 	AVCodec *pCodec = NULL;
 
 	//estrutura que guarda o frame
@@ -89,18 +76,18 @@ private:
 	//buffer para leitura dos frames
 	uint8_t *buffer = NULL;
 
-	//estrutura que armazena a conversão para RGB
+	//estrutura que armazena a conversï¿½o para RGB
 	struct SwsContext *sws_ctx = NULL;
 
 	//surface window para exibir o video
-	//pode ter múltiplas screens
+	//pode ter mï¿½ltiplas screens
 	SDL_Window *screen;
 
 	SDL_Renderer *renderer;
 
 	SDL_Texture* bmp;
 	
-	//exibe o erro com relação ao seu respectivo código
+	//exibe o erro com relaï¿½ï¿½o ao seu respectivo cï¿½digo
 	void exibirErro(int erro);
 
 	int obterCodecParameters(void);
@@ -108,4 +95,5 @@ private:
 	int lerCodecVideo(void);
 
 	int salvarFrame(AVFrame *pFrame, int width, int height, int iFrame);
+
 };

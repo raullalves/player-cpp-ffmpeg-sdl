@@ -1,21 +1,23 @@
 #include "Player.hpp"
 
+using namespace std;
+using namespace cv;
 //construtor
 Player::Player(string endereco) {
 
-	//inicialização do ffmpeg
+	//inicializaï¿½ï¿½o do ffmpeg
 	av_register_all();
 
-	//abre o vídeo
+	//abre o vï¿½deo
 	int res = avformat_open_input(&pFormatCtx, endereco.c_str(), NULL, NULL);
 
-	// Abrir o arquivo de vídeo
+	// Abrir o arquivo de vï¿½deo
 	if (res!=0){
 		exibirErro(res);
 		return;
 	}
 
-	//obtem informação sobre o stream
+	//obtem informaï¿½ï¿½o sobre o stream
 	res = avformat_find_stream_info(pFormatCtx, NULL);
 	if (res < 0) {
 		exibirErro(res);
@@ -50,7 +52,7 @@ Player::~Player(void) {
 
 }
 
-//exibe informação dos streams do arquivo de vídeo específico
+//exibe informaï¿½ï¿½o dos streams do arquivo de vï¿½deo especï¿½fico
 void Player::exibirInformacaoArquivoVideo(void) {
 
 	av_dump_format(pFormatCtx, 0, pFormatCtx->filename, 0);
@@ -87,10 +89,10 @@ int Player::obterCodecParameters(void) {
 
 }
 
-//ler o codec do stream em questão, do vídeo lido
+//ler o codec do stream em questï¿½o, do vï¿½deo lido
 int Player::lerCodecVideo(void) {
 
-	//vê se o codec é suportado
+	//vï¿½ se o codec ï¿½ suportado
 	pCodec = avcodec_find_decoder(pCodecParameters->codec_id);
 
 	if (pCodec == NULL) {
@@ -98,10 +100,10 @@ int Player::lerCodecVideo(void) {
 		return -1; // Codec not found
 	}
 
-	//cria uma estrutura AVCodecContext alocada com o codec em questão
+	//cria uma estrutura AVCodecContext alocada com o codec em questï¿½o
 	pCodecCtx = avcodec_alloc_context3(pCodec);
 
-	//copia os parâmetros originais do vídeo de pCodecParameters para o codecContext
+	//copia os parï¿½metros originais do vï¿½deo de pCodecParameters para o codecContext
 	int res = avcodec_parameters_to_context(pCodecCtx, pCodecParameters);
 
 	if (res < 0) {
@@ -124,30 +126,29 @@ int Player::lerCodecVideo(void) {
 	return 1;
 }
 
-//aloca a memória de acordo com o tamanho do vídeo
+//aloca a memï¿½ria de acordo com o tamanho do vï¿½deo
 int Player::alocarMemoria(void) {
 
 	pFrame = av_frame_alloc();
 	if (pFrame == NULL) {
-		cout << "Não foi possivel alocar a memoria do frame RGB" << endl;
+		cout << "Nï¿½o foi possivel alocar a memoria do frame RGB" << endl;
 		return -1;
 	}
 
 	pFrameRGB = av_frame_alloc();
 	if (pFrame == NULL) {
-		cout << "Não foi possivel alocar a memoria do frame RGB" << endl;
+		cout << "Nï¿½o foi possivel alocar a memoria do frame RGB" << endl;
 		return -1;
 	}
 
-	//ver essa questão do formato escolhido RGB24 ou YUV420p
+	//ver essa questï¿½o do formato escolhido RGB24 ou YUV420p
 	int numBytes = av_image_get_buffer_size(FORMATO, pCodecCtx->width, pCodecCtx->height,1);
 	cout << "qtd bytes="<<numBytes << endl;
 
-	//cria a memória necessária para o buffer
+	//cria a memï¿½ria necessï¿½ria para o buffer
 	buffer = (uint8_t *)av_malloc(numBytes*sizeof(uint8_t));
 
 	//associa o buffer ao Frame
-	//VER MELHOR COMO FUNCIONA
 	int res = av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, buffer, FORMATO, pCodecCtx->width, pCodecCtx->height, 1);
 	if (res < 0) {
 		exibirErro(res);
@@ -156,7 +157,7 @@ int Player::alocarMemoria(void) {
 	return 1;
 }
 
-//Lê a "data" que vem do stream de vídeo
+//Lï¿½ a "data" que vem do stream de vï¿½deo
 int Player::lerFramesVideo(void) {
 
 	AVPacket packet;
@@ -178,11 +179,10 @@ int Player::lerFramesVideo(void) {
 	//lendo e colocando no packet
 	while (av_read_frame(pFormatCtx, &packet) >= 0) {
 
-		//verificação se foi transmitido pelo Stream do Context
+		//verificaï¿½ï¿½o se foi transmitido pelo Stream do Context
 		if (packet.stream_index == videoStream) {
 
-
-			//processo de decodificação
+			//processo de decodificaï¿½ï¿½o
 			int res = avcodec_send_packet(pCodecCtx, &packet);
 			if (res < 0) {
 				exibirErro(res);
@@ -205,47 +205,12 @@ int Player::lerFramesVideo(void) {
 				SDL_RenderPresent(renderer);
 				SDL_UpdateWindowSurface(screen);
 				SDL_Delay(1000/30);
-				/*sws_scale(sws_ctx, (uint8_t const * const *)pFrame->data,
-					pFrame->linesize, 0, pCodecCtx->height,
-					pFrameRGB->data, pFrameRGB->linesize);
-
-				if (++i <= 5)
-					salvarFrame(pFrameRGB, pCodecCtx->width,
-						pCodecCtx->height, i);*/
 			}
 
 		}
-		//ver depois se é mesmo necessário
+		//ver depois se ï¿½ mesmo necessï¿½rio
 		av_packet_unref(&packet);
 	}
-
-	return 1;
-
-
-}
-
-//salva os frames em arquivos ppm
-int Player::salvarFrame(AVFrame *pFrame, int width, int height, int iFrame) {
-
-	FILE *pFile;
-	char szFilename[32];
-	int  y;
-
-	// Open file
-	sprintf_s(szFilename, "frame%d.ppm", iFrame);
-	fopen_s(&pFile, szFilename, "wb");
-	if (pFile == NULL)
-		return -1;
-
-	// Write header
-	fprintf(pFile, "P6\n%d %d\n255\n", width, height);
-
-	// Write pixel data
-	for (y = 0; y<height; y++)
-		fwrite(pFrame->data[0] + y*pFrame->linesize[0], 1, width * 3, pFile);
-
-	// Close file
-	fclose(pFile);
 
 	return 1;
 
@@ -260,7 +225,7 @@ int Player::criarDisplay(void) {
 		SDL_WINDOW_OPENGL);
 
 	if (!screen) {
-		cout << "Não foi possivel setar a screen com o vídeo desse tamannho" << endl;
+		cout << "Nï¿½o foi possivel setar a screen com o vï¿½deo desse tamannho" << endl;
 		return -1;
 	}
 

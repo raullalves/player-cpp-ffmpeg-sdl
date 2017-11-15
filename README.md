@@ -1,10 +1,17 @@
-# Simple C++ video player using FFmpeg and SDL 
+# Simple C++ video player using FFmpeg and SDL 2.0 
 
-Simple video player using FFmpeg for decoding and SDL as a multimedia library
+1 - Install OpenCV
+        Tutorial for Ubuntu 16.04: https://www.learnopencv.com/install-opencv3-on-ubuntu/
 
-It Uses FFmpeg 3.2.4 and SDL 2.0 (YOU MUST HAVE THEM LINKED WHEN COMPILING)
+2 - Install FFmpeg version >= 3.2.4
+        sudo add-apt-repository ppa:jonathonf/ffmpeg-3
+        sudo apt update && sudo apt install ffmpeg libav-tools x264 x265 libavdevice-dev
 
+3 - Install SDL >= 2.0
+        sudo apt-get install libsdl2-dev libsdl2-2.0
 
+4 - Install:
+        make
 
-
-
+5 - Run
+    ./player video_address
