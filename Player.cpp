@@ -5,8 +5,6 @@ using namespace cv;
 
 //struct para audio
 struct SwrContext *swrCtx = NULL;
-static Uint8 *audio_pos; // global pointer to the audio buffer to be played
-static Uint32 audio_len; // remaining length of the sample we have to play
 AVFrame wanted_frame;
 
 AudioPacket audioq;
@@ -32,7 +30,7 @@ int Player::obterCodecParameters(void) {
 
 
 	int videoStream = -1;
-	for (int i = 0; i<pFormatCtx->nb_streams; i++){
+	for (unsigned int i = 0; i<pFormatCtx->nb_streams; i++){
 		if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) videoStream = i;
 		if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) audioStream = i;
 	}
@@ -453,8 +451,8 @@ int Player::lerFramesVideo(void) {
 int Player::criarDisplay(void) {
 
 	screen = SDL_CreateWindow("Video Player teste",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
+		SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED,
 		pCodecCtx->width, pCodecCtx->height,
 		SDL_WINDOW_OPENGL);
 
