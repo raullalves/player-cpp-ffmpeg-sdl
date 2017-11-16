@@ -1,6 +1,7 @@
 #define ERROR_SIZE 128
-//define o formato do frame AV_PIX_FMT_RGB24 ou AV_PIX_FMT_YUV480P
 #define FORMATO AV_PIX_FMT_RGB24
+#define SDL_AUDIO_BUFFER_SIZE 1024;
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000
 
 #include <iostream>
 #include <string>
@@ -29,8 +30,18 @@ extern "C"
 }
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_thread.h"
-#include <thread>
-#include <chrono> 
+#include "SDL2/SDL_syswm.h"
+#include "SDL2/SDL_render.h"
+#include "SDL2/SDL_audio.h"
+#define SDL_MAIN_HANDLED
+
+typedef struct _AudioPacket
+	{
+		AVPacketList *first, *last;
+		int nb_packets, size;
+  		SDL_mutex *mutex;
+  		SDL_cond *cond;
+	} AudioPacket;
 
 class Player {
 
@@ -38,6 +49,8 @@ public:
 	
 	//construtor
 	Player(std::string endereco) {
+
+		audioStream = -1;
 
 		//init ffmpeg
 		av_register_all();
@@ -90,11 +103,17 @@ public:
 	int alocarMemoria(void);
 	int lerFramesVideo(void);
 	int criarDisplay(void);
+	
+	static int getAudioPacket(AudioPacket*, AVPacket*, int);
 
 private:
-
+	
+	void memsetAudioPacket(AudioPacket * pq);
 	//armazena o �ndice do determinado Stream a ser transmitido
 	int videoStream;
+
+	//stream de audio
+	int audioStream;
 
 	//contem informa��es sobre o arquivo de v�deo, incluindo os codecs, etc
 	AVFormatContext *pFormatCtx = NULL;
@@ -104,11 +123,21 @@ private:
 	//olhando o codec_type e vendo se � transmissao de video do tipo AVMEDIA_TYPE_VIDEO
 	AVCodecParameters *pCodecParameters = NULL;
 
+	//Audio COdec Parametrs
+	AVCodecParameters *pCodecAudioParameters = NULL;
+
 	//informa��es do codecParameters, por�m copiadas. o pCodecParameters serve como um backup das informa��es do v�deo
 	AVCodecContext *pCodecCtx = NULL;
 
+	AVCodecContext *pCodecAudioCtx = NULL;
+
+	SDL_AudioSpec wantedSpec = { 0 }, audioSpec = { 0 };
+
 	//guarda o codec do v�deo
 	AVCodec *pCodec = NULL;
+
+	//guarda o codec do audio
+	AVCodec *pAudioCodec = NULL;
 
 	//estrutura que guarda o frame
 	AVFrame *pFrame = NULL;
@@ -137,6 +166,10 @@ private:
 
 	int lerCodecVideo(void);
 
-	int salvarFrame(AVFrame *pFrame, int width, int height, int iFrame);
+	int PacketQueuePut(AudioPacket *, const AVPacket *);
+
+	void initAudioPacket(AudioPacket *); 
+
+	int putAudioPacket(AudioPacket *, AVPacket *); 
 
 };

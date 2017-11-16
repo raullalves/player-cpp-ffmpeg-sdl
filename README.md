@@ -1,4 +1,6 @@
-# Simple C++ video player using FFmpeg and SDL 2.0 
+# Simple C++ video player using FFmpeg 3 and SDL 2.0 
+
+Supports video with audio.
 
 1 - Install OpenCV<br />
         Tutorial for Ubuntu 16.04: https://www.learnopencv.com/install-opencv3-on-ubuntu/
@@ -7,6 +9,7 @@
         ```
         sudo add-apt-repository ppa:jonathonf/ffmpeg-3
         ```
+        <br />
         ```
         sudo apt update && sudo apt install ffmpeg libav-tools x264 x265 libavdevice-dev
         ```
