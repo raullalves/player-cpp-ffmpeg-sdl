@@ -1,21 +1,10 @@
-#include <iostream>
-#include <string>
-#include <chrono>
-
-#include "opencv2/core.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
-
 #include "Player.hpp"
 
-//SDL define main. IMPORTANTE!
 #ifdef main
 #undef main
 #endif
 
 using namespace std;
-using namespace cv;
-using namespace chrono;
 
 int main(int argc, const char *argv[]) {
 

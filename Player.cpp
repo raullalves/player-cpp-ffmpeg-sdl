@@ -135,20 +135,21 @@ int Player::alocarMemoria(void) {
 	memset(&wantedSpec, 0, sizeof(wantedSpec));
 	wantedSpec.channels = pCodecAudioCtx->channels;
 	wantedSpec.freq = pCodecAudioCtx->sample_rate;
-	//wantedSpec.format = AUDIO_F32;
 	wantedSpec.format = AUDIO_S16SYS;
 	wantedSpec.silence = 0;
 	wantedSpec.samples = SDL_AUDIO_BUFFER_SIZE;
 	wantedSpec.userdata = pCodecAudioCtx;
 	wantedSpec.callback = audio_callback;
+	
 	if (SDL_OpenAudio(&wantedSpec, &audioSpec) < 0) {
 		cout<<"Error opening audio"<<endl;
 		exit(-1);
 	}
-	wanted_frame.format = AV_SAMPLE_FMT_S16;
-    wanted_frame.sample_rate = audioSpec.freq;
-    wanted_frame.channel_layout = av_get_default_channel_layout(audioSpec.channels);
-    wanted_frame.channels = audioSpec.channels;
+	wanted_frame.format = AV_SAMPLE_FMT_S16;	
+	wanted_frame.sample_rate = audioSpec.freq;
+	wanted_frame.channel_layout = av_get_default_channel_layout(audioSpec.channels);
+	wanted_frame.channels = audioSpec.channels;
+	
 	initAudioPacket(&audioq);
 	SDL_PauseAudio(0);
 
