@@ -1,7 +1,6 @@
 #include "Player.hpp"
 
 using namespace std;
-using namespace cv;
 
 //struct para audio
 struct SwrContext *swrCtx = NULL;

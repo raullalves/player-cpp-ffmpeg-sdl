@@ -1,18 +1,5 @@
-#define ERROR_SIZE 128
-#define FORMATO AV_PIX_FMT_RGB24
-#define SDL_AUDIO_BUFFER_SIZE 1024;
-#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000
-
 #include <iostream>
-#include <string>
-#include "opencv/cv.h"
-#include "opencv/highgui.h"
-#include "opencv2/core.hpp"
-#include "opencv2/face.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/objdetect.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/videoio.hpp"
+#include <assert.h>
 
 extern "C"
 {
@@ -33,7 +20,12 @@ extern "C"
 #include "SDL2/SDL_syswm.h"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_audio.h"
+
 #define SDL_MAIN_HANDLED
+#define ERROR_SIZE 128
+#define FORMATO AV_PIX_FMT_RGB24
+#define SDL_AUDIO_BUFFER_SIZE 1024;
+#define AVCODEC_MAX_AUDIO_FRAME_SIZE 192000
 
 typedef struct _AudioPacket
 	{
