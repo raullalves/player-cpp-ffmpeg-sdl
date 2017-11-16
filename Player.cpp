@@ -8,6 +8,7 @@ AVFrame wanted_frame;
 
 AudioPacket audioq;
 void audio_callback(void*, Uint8*, int);
+
 //exibe informa��o dos streams do arquivo de v�deo espec�fico
 void Player::exibirInformacaoArquivoVideo(void) {
 
