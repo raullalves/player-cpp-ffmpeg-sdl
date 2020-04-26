@@ -63,7 +63,7 @@ public:
 	
 	int malloc(void);
 	int lerFramesVideo(void);
-	int criarDisplay(void);
+	int create_display(void);
 	
 	static int getAudioPacket(AudioPacket*, AVPacket*, int);
 

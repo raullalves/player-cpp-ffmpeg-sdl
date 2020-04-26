@@ -444,7 +444,7 @@ int Player::lerFramesVideo(void) {
 
 }
 
-int Player::criarDisplay(void) {
+int Player::create_display(void) {
 
 	screen = SDL_CreateWindow("Video Player teste",
 		SDL_WINDOWPOS_CENTERED,
