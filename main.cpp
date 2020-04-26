@@ -12,27 +12,6 @@ int main(int argc, const char *argv[]) {
 	}*/
 
 	SDLWrapper::init_sdl();
-
-	//Player * player = new Player(argv[1]);
-	Player * player = new Player(video_addr);
-	
-	int res = player->malloc();
-	if (res < 0) {
-		std::cout << "Error allocating memory";
-		delete(player);
-		return -1;
-	}
-
-	res= player->create_display();
-
-	res = player->display_video();
-	if (res < 0) {
-		std::cout << "Shit happens" << std::endl;
-		delete(player);
-		return -1;
-	}
-
-	delete(player);
-
-	return 0;
+	Player::get_instance()->run(video_addr);
+	Player::get_instance()->clear();
 }

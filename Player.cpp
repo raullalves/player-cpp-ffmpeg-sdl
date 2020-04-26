@@ -2,6 +2,61 @@
 
 using namespace std;
 
+Player* Player::instance = 0;
+Player* Player::get_instance()
+{
+	if (instance == 0)
+		instance = new Player();
+	return instance;
+}
+
+void Player::open()
+{
+	audioStream = -1;
+
+	// open video
+	int res = avformat_open_input(&pFormatCtx, this->video_addr.c_str(), NULL, NULL);
+
+	// check video
+	if (res != 0)
+		Utils::display_ffmpeg_exception(res);
+
+	// get video info
+	res = avformat_find_stream_info(pFormatCtx, NULL);
+	if (res < 0)
+		Utils::display_ffmpeg_exception(res);
+
+	// get video stream
+	videoStream = get_video_stream();
+	if (videoStream == -1)
+		Utils::display_exception("Error opening your video using AVCodecParameters, probably doesnt have codecpar_type type AVMEDIA_TYPE_VIDEO");
+
+	// open
+	read_audio_video_codec();
+}
+
+void Player::clear()
+{
+	// close context info
+	avformat_close_input(&pFormatCtx);
+	avcodec_free_context(&pCodecCtx);
+
+	// free buffers
+	av_free(buffer);
+	av_free(pFrameRGB);
+
+	// Free the YUV frame
+	av_free(pFrame);
+
+	// Close the codecs
+	avcodec_close(pCodecCtx);
+
+	// Close the video file
+	avformat_close_input(&pFormatCtx);
+
+	delete Player::get_instance();
+}
+
 //struct para audio
 struct SwrContext *swrCtx = NULL;
 AVFrame wanted_frame;
@@ -313,7 +368,7 @@ int audio_decode_frame(AVCodecContext* aCodecCtx, uint8_t* audio_buf, int buf_si
         if (pkt.data)
             av_packet_unref(&pkt);
 
-        if (Player::getAudioPacket(&audioq, &pkt, 1) < 0)
+        if (Player::get_instance()->getAudioPacket(&audioq, &pkt, 1) < 0)
             return -1;
 
         audio_pkt_data = pkt.data;
