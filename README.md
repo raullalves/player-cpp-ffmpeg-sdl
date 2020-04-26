@@ -3,9 +3,13 @@
 Supports video with audio.
 ## Windows setup (Tested on x64 environment)
 1 - Install FFMpeg here https://ffmpeg.zeranoe.com/builds/win64/dev/ and add it to your path
+
 2 - Install SDL here https://www.libsdl.org/download-2.0.php and add it to your path
+
 3 - (Optional) Install g++ and make from MinGW https://sourceforge.net/projects/mingw/
+
 4 - Create a env variable to the /include folder of the FFmpeg folder: <FFmpeg_include>, and for the lib folder <FFmpeg_lib>
+
 5 - Create a env variable to the /include folder of the SDL2 folder: <SDL2_include>
 
 6 - Run make
