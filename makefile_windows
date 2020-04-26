@@ -1,0 +1,9 @@
+CC = g++ -std=c++11 -g -Wall 
+IFLAGS = -I${FFmpeg_include} -I${SDL2_include}
+LDFLAGS = -L${FFmpeg_lib} -L${SDL2_lib}
+LDFLAGS += -lSDL2 -lavcodec -lavdevice -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
+SRCS = *.cpp
+PROG = player
+
+$(PROG):$(SRCS) 
+	$(CC) $(IFLAGS) -o $(PROG) $(SRCS) $(LDFLAGS)

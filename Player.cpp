@@ -1,4 +1,4 @@
-#include "Player.hpp"
+#include "stdafx.h"
 
 using namespace std;
 
@@ -8,13 +8,6 @@ AVFrame wanted_frame;
 
 AudioPacket audioq;
 void audio_callback(void*, Uint8*, int);
-
-//exibe informa��o dos streams do arquivo de v�deo espec�fico
-void Player::exibirInformacaoArquivoVideo(void) {
-
-	av_dump_format(pFormatCtx, 0, pFormatCtx->filename, 0);
-
-}
 
 //exibe o erro, descrevendo-o
 void Player::exibirErro(int erro) {
