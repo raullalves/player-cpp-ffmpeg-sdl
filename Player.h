@@ -30,11 +30,11 @@ public:
 			Utils::display_ffmpeg_exception(res);
 
 		//get video stream
-		videoStream = get_video_stream_codec();
+		videoStream = get_video_stream();
 		if (videoStream == -1)
 			Utils::display_exception("Error opening your video using AVCodecParameters, probably doesnt have codecpar_type type AVMEDIA_TYPE_VIDEO");
 
-		if (lerCodecVideo() < 0) exit(-1);
+		if (read_audio_video_codec() < 0) exit(-1);
 
 	}
 
@@ -114,9 +114,9 @@ private:
 
 	SDL_Texture* bmp;
 
-	int get_video_stream_codec(void);
+	int get_video_stream(void);
 
-	int lerCodecVideo(void);
+	int read_audio_video_codec(void);
 
 	int PacketQueuePut(AudioPacket *, const AVPacket *);
 

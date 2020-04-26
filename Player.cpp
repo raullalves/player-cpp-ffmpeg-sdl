@@ -9,8 +9,10 @@ AVFrame wanted_frame;
 AudioPacket audioq;
 void audio_callback(void*, Uint8*, int);
 
-//obtem o stream do video
-int Player::get_video_stream_codec(void) 
+/*
+Acquires video stream codec
+*/
+int Player::get_video_stream(void)
 {
 	int videoStream = -1;
 
@@ -28,8 +30,10 @@ int Player::get_video_stream_codec(void)
 	return videoStream;
 }
 
-//ler o codec do stream em quest�o, do v�deo lido
-int Player::lerCodecVideo(void) {
+/*
+Reads audio and video codec
+*/
+int Player::read_audio_video_codec(void) {
 
 	//v� se o codec � suportado
 	pCodec = avcodec_find_decoder(pCodecParameters->codec_id);
