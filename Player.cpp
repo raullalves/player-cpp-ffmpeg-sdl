@@ -10,22 +10,22 @@ AudioPacket audioq;
 void audio_callback(void*, Uint8*, int);
 
 //obtem o stream do video
-int Player::obterCodecParameters(void) {
-
-
+int Player::get_video_stream_codec(void) 
+{
 	int videoStream = -1;
+
 	for (unsigned int i = 0; i<pFormatCtx->nb_streams; i++){
 		if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) videoStream = i;
 		if (pFormatCtx->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO) audioStream = i;
 	}
-	if (videoStream == -1) {
-		cout << "Nao achou o stream" << endl;
-		return -1;
-	}
+
+	if (videoStream == -1)
+		Utils::display_exception("Couldnt find stream");
+
 	pCodecParameters = pFormatCtx->streams[videoStream]->codecpar;
 	if(audioStream != -1) pCodecAudioParameters = pFormatCtx->streams[audioStream]->codecpar;
-	return videoStream;
 
+	return videoStream;
 }
 
 //ler o codec do stream em quest�o, do v�deo lido

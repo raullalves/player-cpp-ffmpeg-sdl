@@ -30,11 +30,9 @@ public:
 			Utils::display_ffmpeg_exception(res);
 
 		//get video stream
-		videoStream = obterCodecParameters();
-		if (videoStream == -1) {
-			std::cout << "Error opening your video using AVCodecParameters, does not have codecpar_type type AVMEDIA_TYPE_VIDEO" << std::endl;
-			exit(-1);
-		}
+		videoStream = get_video_stream_codec();
+		if (videoStream == -1)
+			Utils::display_exception("Error opening your video using AVCodecParameters, probably doesnt have codecpar_type type AVMEDIA_TYPE_VIDEO");
 
 		if (lerCodecVideo() < 0) exit(-1);
 
@@ -116,7 +114,7 @@ private:
 
 	SDL_Texture* bmp;
 
-	int obterCodecParameters(void);
+	int get_video_stream_codec(void);
 
 	int lerCodecVideo(void);
 
