@@ -20,18 +20,14 @@ public:
 		//open video
 		int res = avformat_open_input(&pFormatCtx, endereco.c_str(), NULL, NULL);
 
-		//check video opened
-		if (res!=0){
-			exibirErro(res);
-			exit(-1);
-		}
+		//check video
+		if (res!=0)
+			Utils::display_ffmpeg_exception(res);
 
 		//get video info
 		res = avformat_find_stream_info(pFormatCtx, NULL);
-		if (res < 0) {
-			exibirErro(res);
-			exit(-1);
-		}
+		if (res < 0) 
+			Utils::display_ffmpeg_exception(res);
 
 		//get video stream
 		videoStream = obterCodecParameters();
@@ -119,9 +115,6 @@ private:
 	SDL_Renderer *renderer;
 
 	SDL_Texture* bmp;
-	
-	//exibe o erro com rela��o ao seu respectivo c�digo
-	void exibirErro(int erro);
 
 	int obterCodecParameters(void);
 

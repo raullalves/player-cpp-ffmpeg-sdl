@@ -9,15 +9,6 @@ AVFrame wanted_frame;
 AudioPacket audioq;
 void audio_callback(void*, Uint8*, int);
 
-//exibe o erro, descrevendo-o
-void Player::exibirErro(int erro) {
-
-	char errobuf[ERROR_SIZE];
-	av_strerror(erro, errobuf, ERROR_SIZE);
-	cout << "Erro = " << errobuf<<endl;
-
-}
-
 //obtem o stream do video
 int Player::obterCodecParameters(void) {
 
@@ -169,10 +160,9 @@ int Player::malloc(void) {
 
 	//associa o buffer ao Frame
 	res = av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, buffer, FORMATO, pCodecCtx->width, pCodecCtx->height, 1);
-	if (res < 0) {
-		exibirErro(res);
-		return res;
-	}
+	if (res < 0)
+		Utils::display_ffmpeg_exception(res);
+	
 	return 1;
 }
 
@@ -419,16 +409,11 @@ int Player::display_video(void) {
 
 			//processo de decodifica��o
 			int res = avcodec_send_packet(pCodecCtx, &packet);
-			if (res < 0) {
-				exibirErro(res);
-				continue;
-			}
+			if (res < 0)
+				Utils::display_ffmpeg_exception(res);
 
 			res = avcodec_receive_frame(pCodecCtx, pFrame);
-			if (res < 0) {
-				exibirErro(res);
-				continue;
-			}
+			
 			SDL_UpdateYUVTexture(bmp, NULL, pFrame->data[0], pFrame->linesize[0],
 				pFrame->data[1], pFrame->linesize[1],
 				pFrame->data[2], pFrame->linesize[2]);

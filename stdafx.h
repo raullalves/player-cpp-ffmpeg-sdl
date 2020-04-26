@@ -26,5 +26,6 @@ extern "C"
 #include <exception>
 
 #include "defs.h"
+#include "Utils.h"
 #include "SDLWrapper.h"
 #include "Player.h"
