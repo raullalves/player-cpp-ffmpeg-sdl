@@ -1,14 +1,7 @@
 #include "stdafx.h"
 
-typedef struct _AudioPacket
-	{
-		AVPacketList *first, *last;
-		int nb_packets, size;
-  		SDL_mutex *mutex;
-  		SDL_cond *cond;
-	} AudioPacket;
-
-class Player {
+class Player 
+{
 
 public:
 	
@@ -17,29 +10,34 @@ public:
 
 		audioStream = -1;
 
-		//open video
+		// open video
 		int res = avformat_open_input(&pFormatCtx, endereco.c_str(), NULL, NULL);
 
-		//check video
+		// check video
 		if (res!=0)
 			Utils::display_ffmpeg_exception(res);
 
-		//get video info
+		// get video info
 		res = avformat_find_stream_info(pFormatCtx, NULL);
 		if (res < 0) 
 			Utils::display_ffmpeg_exception(res);
 
-		//get video stream
+		// get video stream
 		videoStream = get_video_stream();
 		if (videoStream == -1)
 			Utils::display_exception("Error opening your video using AVCodecParameters, probably doesnt have codecpar_type type AVMEDIA_TYPE_VIDEO");
 
-		if (read_audio_video_codec() < 0) exit(-1);
-
+		// open
+		read_audio_video_codec();
 	}
 
-	~Player(void) {
+	~Player(void) 
+	{
+		// close context info
+		avformat_close_input(&pFormatCtx);
+		avcodec_free_context(&pCodecCtx);
 
+		// free buffers
 		av_free(buffer);
 		av_free(pFrameRGB);
 
@@ -51,7 +49,6 @@ public:
 
 		// Close the video file
 		avformat_close_input(&pFormatCtx);
-
 	}
 
 	

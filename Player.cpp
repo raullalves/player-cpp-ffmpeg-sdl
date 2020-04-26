@@ -10,7 +10,7 @@ AudioPacket audioq;
 void audio_callback(void*, Uint8*, int);
 
 /*
-Acquires video stream codec
+Acquires video stream
 */
 int Player::get_video_stream(void)
 {
@@ -33,66 +33,47 @@ int Player::get_video_stream(void)
 /*
 Reads audio and video codec
 */
-int Player::read_audio_video_codec(void) {
-
-	//v� se o codec � suportado
+int Player::read_audio_video_codec(void) 
+{
 	pCodec = avcodec_find_decoder(pCodecParameters->codec_id);
 	pAudioCodec = avcodec_find_decoder(pCodecAudioParameters->codec_id);
 
-	if (pCodec == NULL) {
-		cout << " bad video codec " << endl;
-		return -1; // Codec not found
-	}
+	if (pCodec == NULL)
+		Utils::display_exception("Video decoder not found");
 
-	if (pAudioCodec == NULL) {
-		cout << " bad audio codec " << endl;
-		return -1; // Codec not found
-	}
+	if (pAudioCodec == NULL) 
+		Utils::display_exception("Audio decoder not found");
 
-	//cria uma estrutura AVCodecContext alocada com o codec em quest�o
 	pCodecCtx = avcodec_alloc_context3(pCodec);
-	if(pCodecCtx == NULL){
-		cout<<"Bad video codec"<<endl;
-		exit(-1);
-	}
+
+	if(pCodecCtx == NULL)
+		Utils::display_exception("Failed to allocate video context decoder");
 
 	pCodecAudioCtx = avcodec_alloc_context3(pAudioCodec);
-	if(pCodecAudioCtx == NULL){
-		cout<<"Bad audio codec"<<endl;
-		exit(-1);
-	}
 
-	//copia os par�metros originais do v�deo de pCodecParameters para o codecContext
+	if(pCodecAudioCtx == NULL)
+		Utils::display_exception("Failed to allocate audio context decoder");
+
 	int res = avcodec_parameters_to_context(pCodecCtx, pCodecParameters);
-	if(res < 0){
-		cout<<"Failed to get video codec"<<endl;
-		avformat_close_input(&pFormatCtx);
-		avcodec_free_context(&pCodecCtx);
-		exit(-1);
-	}
-	//copia os par�metros originais do audio de pCodecParameters para o codecContext
+
+	if(res < 0)
+		Utils::display_exception("Failed to transfer video parameters to context");
+
 	res = avcodec_parameters_to_context(pCodecAudioCtx, pCodecAudioParameters);
 
-	if (res < 0) {
-		cout<<"Failed to get audio codec"<<endl;
-		avformat_close_input(&pFormatCtx);
-		avcodec_free_context(&pCodecCtx);
-		avcodec_free_context(&pCodecAudioCtx);
-		exit(-1);
-	}
+	if (res < 0) 
+		Utils::display_exception("Failed to transfer audio parameters to context");
 
-	//executa o codec
 	res = avcodec_open2(pCodecCtx, pCodec, NULL);
-	if(res < 0){
-		cout<<"Failed to open video codec"<<endl;
-		exit(-1);
-	}
+
+	if(res < 0)
+		Utils::display_exception("Failed to open video codec");
+
 	res = avcodec_open2(pCodecAudioCtx, pAudioCodec, NULL);
 
-	if (res < 0) {
-		cout<<"Failed to open audio codec"<<endl;
-		exit(-1);
-	}
+	if (res < 0)
+		Utils::display_exception("Failed to open auvio codec");
+
 	return 1;
 }
 
