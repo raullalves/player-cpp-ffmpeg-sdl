@@ -101,8 +101,10 @@ int Player::lerCodecVideo(void) {
 	return 1;
 }
 
-//aloca a mem�ria de acordo com o tamanho do v�deo
-int Player::alocarMemoria(void) {
+/*
+Alloc memory for the display
+*/
+int Player::malloc(void) {
 
 	swrCtx = swr_alloc();
 	if(swrCtx == NULL){

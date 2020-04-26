@@ -61,7 +61,7 @@ public:
 	}
 
 	
-	int alocarMemoria(void);
+	int malloc(void);
 	int lerFramesVideo(void);
 	int criarDisplay(void);
 	
