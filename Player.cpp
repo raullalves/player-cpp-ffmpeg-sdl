@@ -10,6 +10,16 @@ Player* Player::get_instance()
 	return instance;
 }
 
+void Player::run(std::string video_addr)
+{
+	this->video_addr = video_addr;
+
+	this->open();
+	this->malloc();
+	this->create_display();
+	this->display_video();
+}
+
 void Player::open()
 {
 	audioStream = -1;
@@ -138,10 +148,8 @@ Alloc memory for the display
 int Player::malloc(void) {
 
 	swrCtx = swr_alloc();
-	if(swrCtx == NULL){
-		cout<<"Failed to load audio"<<endl;
-		exit(-1);
-	}
+	if (swrCtx == NULL)
+		Utils::display_exception("Failed to load audio");
 
 	//audio context
 	av_opt_set_channel_layout(swrCtx, "in_channel_layout", pCodecAudioCtx->channel_layout, 0);
@@ -153,12 +161,11 @@ int Player::malloc(void) {
 	
 	int res = swr_init(swrCtx);
 
-	if(res != 0){
-		cout<<"Failed to initialize audio"<<endl;
-		exit(-1);
-	}
+	if (res != 0)
+		Utils::display_exception("Failed to initialize audio");
 
 	memset(&wantedSpec, 0, sizeof(wantedSpec));
+
 	wantedSpec.channels = pCodecAudioCtx->channels;
 	wantedSpec.freq = pCodecAudioCtx->sample_rate;
 	wantedSpec.format = AUDIO_S16SYS;
@@ -167,16 +174,14 @@ int Player::malloc(void) {
 	wantedSpec.userdata = pCodecAudioCtx;
 	wantedSpec.callback = audio_callback;
 	
-	if (SDL_OpenAudio(&wantedSpec, &audioSpec) < 0) {
-		cout<<"Error opening audio"<<endl;
-		exit(-1);
-	}
+	SDLWrapper::open_audio(&wantedSpec, &audioSpec);
+
 	wanted_frame.format = AV_SAMPLE_FMT_S16;	
 	wanted_frame.sample_rate = audioSpec.freq;
 	wanted_frame.channel_layout = av_get_default_channel_layout(audioSpec.channels);
 	wanted_frame.channels = audioSpec.channels;
 	
-	initAudioPacket(&audioq);
+	init_audio_packet(&audioq);
 	SDL_PauseAudio(0);
 
 	pFrame = av_frame_alloc();
@@ -191,14 +196,10 @@ int Player::malloc(void) {
 		return -1;
 	}
 
-	//ver essa quest�o do formato escolhido RGB24 ou YUV420p
 	int numBytes = av_image_get_buffer_size(FORMATO, pCodecCtx->width, pCodecCtx->height,1);
-	cout << "qtd bytes="<<numBytes << endl;
 
-	//cria a mem�ria necess�ria para o buffer
 	buffer = (uint8_t *)av_malloc(numBytes*sizeof(uint8_t));
 
-	//associa o buffer ao Frame
 	res = av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, buffer, FORMATO, pCodecCtx->width, pCodecCtx->height, 1);
 	if (res < 0)
 		Utils::display_ffmpeg_exception(res);
@@ -206,7 +207,7 @@ int Player::malloc(void) {
 	return 1;
 }
 
-void Player::initAudioPacket(AudioPacket *q) 
+void Player::init_audio_packet(AudioPacket *q) 
 {
     q->last = NULL;
     q->first = NULL;
@@ -214,7 +215,7 @@ void Player::initAudioPacket(AudioPacket *q)
     q->cond = SDL_CreateCond();
 }
 
-int Player::putAudioPacket(AudioPacket *q, AVPacket *pkt) 
+int Player::put_audio_packet(AudioPacket *q, AVPacket *pkt) 
 {
     AVPacketList *pktl;
     AVPacket *newPkt;
@@ -442,7 +443,7 @@ int Player::display_video(void) {
 	while (av_read_frame(pFormatCtx, &packet) >= 0) {
 
 		if (packet.stream_index == audioStream) {
-			putAudioPacket(&audioq, &packet);
+			put_audio_packet(&audioq, &packet);
 		}
 		//verifica��o se foi transmitido pelo Stream do Context
 		if (packet.stream_index == videoStream) {

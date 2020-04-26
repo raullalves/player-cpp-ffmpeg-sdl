@@ -2,7 +2,8 @@
 
 void Utils::display_exception(const char * message)
 {
-	throw std::exception(message);
+	Player::get_instance()->clear();
+	throw std::runtime_error(message);
 }
 
 void Utils::display_ffmpeg_exception(int error_code)
