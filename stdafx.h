@@ -23,5 +23,8 @@ extern "C"
 #include "SDL2/SDL_render.h"
 #include "SDL2/SDL_audio.h"
 
+#include <exception>
+
 #include "defs.h"
+#include "SDLWrapper.h"
 #include "Player.h"

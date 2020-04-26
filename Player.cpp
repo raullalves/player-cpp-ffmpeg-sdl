@@ -387,8 +387,10 @@ void audio_callback(void* userdata, Uint8* stream, int len){
     }
 }
 
-//L� a "data" que vem do stream de v�deo
-int Player::lerFramesVideo(void) {
+/*
+Read frames and display
+*/
+int Player::display_video(void) {
 
 	AVPacket packet;
 
@@ -444,6 +446,9 @@ int Player::lerFramesVideo(void) {
 
 }
 
+/*
+Create the display for the received video
+*/
 int Player::create_display(void) {
 
 	screen = SDL_CreateWindow("Video Player teste",
