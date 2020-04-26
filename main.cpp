@@ -7,9 +7,8 @@
 using namespace std;
 
 int main(int argc, const char *argv[]) {
-	const char* video_adder = "D:/video.mp4";
 
-	if(argc == 2){
+	if(argc != 2){
 		cout << "Usage: ./player <video_addr>"<<endl;
 		exit(-1);
 	}
@@ -21,7 +20,7 @@ int main(int argc, const char *argv[]) {
 		exit(-1);
 	}
 
-	Player * player = new Player(video_adder);
+	Player * player = new Player(argv[1]);
 	
 	int res = player->alocarMemoria();
 	if (res < 0) {
