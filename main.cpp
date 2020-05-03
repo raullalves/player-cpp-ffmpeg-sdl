@@ -4,15 +4,16 @@
 #undef main
 #endif
 
-int main(int argc, const char *argv[]) {
-	const char* video_addr = "D:/teste.mp4";
-	/*if(argc != 2){
-		cout << "Usage: ./player <video_addr>"<<endl;
+int main(int argc, const char *argv[]) 
+{
+	if(argc != 2){
+		std::cout << "Usage: ./player <video_addr>"<<std::endl;
 		exit(-1);
-	}*/
+	}
 
 	SDLWrapper::init_sdl();
-	//Player::get_instance()->run(video_addr);
+
 	Player::get_instance()->run(argv[1]);
+
 	Player::get_instance()->clear();
 }

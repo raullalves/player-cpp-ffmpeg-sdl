@@ -6,7 +6,7 @@ class Player
 public:
 	static Player* get_instance();
 
-	void run(std::string);
+	void run(std::string, std::string window_name="");
 	void clear();
 
 	static int getAudioPacket(AudioPacket*, AVPacket*, int);
@@ -26,6 +26,7 @@ private:
 	int read_audio_video_codec(void);
 
 	std::string video_addr;
+	std::string window_name;
 
 	int videoStream = 0;
 	int audioStream = 0;

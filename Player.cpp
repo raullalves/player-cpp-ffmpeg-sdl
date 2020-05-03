@@ -10,9 +10,10 @@ Player* Player::get_instance()
 	return instance;
 }
 
-void Player::run(std::string video_addr)
+void Player::run(std::string video_addr, std::string window_name)
 {
 	this->video_addr = video_addr;
+	this->window_name = window_name;
 
 	this->open();
 	this->malloc();
@@ -202,7 +203,6 @@ int Player::getAudioPacket(AudioPacket* q, AVPacket* pkt, int block){
     SDL_UnlockMutex(q->mutex);
 
     return ret;
-
 }
 
 /*
@@ -226,16 +226,15 @@ int Player::display_video(void) {
 		);
 	SDL_Event evt;
 
-	//lendo e colocando no packet
 	while (av_read_frame(pFormatCtx, &packet) >= 0) {
 
 		if (packet.stream_index == audioStream) {
 			Audio::get_instance()->put_audio_packet(&packet);
 		}
-		//verifica��o se foi transmitido pelo Stream do Context
-		if (packet.stream_index == videoStream) {
 
-			//processo de decodifica��o
+		if (packet.stream_index == videoStream) 
+		{
+
 			int res = avcodec_send_packet(pCodecCtx, &packet);
 			if (res < 0)
 				Utils::display_ffmpeg_exception(res);
@@ -251,7 +250,6 @@ int Player::display_video(void) {
 			SDL_Delay(1000/30);
 		}
 
-		//av_packet_unref(&packet);
 		SDL_PollEvent(&evt);
 	}
 
@@ -264,16 +262,14 @@ Create the display for the received video
 */
 int Player::create_display(void) 
 {
-	screen = SDL_CreateWindow("My video",
+	screen = SDL_CreateWindow(window_name.c_str(),
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
 			pCodecCtx->width, pCodecCtx->height,
 			SDL_WINDOW_OPENGL);
 	
-	if (!screen) {
-		cout << "N�o foi possivel setar a screen com o v�deo desse tamannho" << endl;
-		return -1;
-	}
+	if (!screen)
+		Utils::display_exception("Couldn't show display window");
 
 	renderer = SDL_CreateRenderer(screen, -1, 0);
 
