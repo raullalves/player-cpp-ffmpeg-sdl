@@ -1,6 +1,6 @@
 CC = g++ -std=c++11
 CFLAGS = -g -Wall
-SRCS = Player.cpp main.cpp
+SRCS = *.cpp
 PROG = player
 
 LIBS_CONFIG = `pkg-config --libs libavformat libavcodec libswresample libswscale libavutil sdl2`
