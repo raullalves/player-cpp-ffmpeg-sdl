@@ -12,7 +12,7 @@ int main(int argc, const char *argv[]) {
 	}*/
 
 	SDLWrapper::init_sdl();
-	//Player::get_instance()->run(video_addr);
-	Player::get_instance()->run(argv[1]);
+	Player::get_instance()->run(video_addr);
+	//Player::get_instance()->run(argv[1]);
 	Player::get_instance()->clear();
 }

@@ -263,16 +263,14 @@ int Player::display_video(void) {
 /*
 Create the display for the received video
 */
-int Player::create_display(void) {
-
-	auto witdh = pCodecCtx->width;
-	auto height = pCodecCtx->height;
-
-	screen = SDL_CreateWindow("Video Player teste",
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		witdh, height,
-		SDL_WINDOW_FULLSCREEN);
+int Player::create_display(void) 
+{
+	screen = SDL_CreateWindow("My video",
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			pCodecCtx->width, pCodecCtx->height,
+			SDL_WINDOW_OPENGL);
+	
 
 	if (!screen) {
 		cout << "N�o foi possivel setar a screen com o v�deo desse tamannho" << endl;

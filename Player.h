@@ -27,8 +27,8 @@ private:
 
 	std::string video_addr;
 
-	int videoStream;
-	int audioStream;
+	int videoStream = 0;
+	int audioStream = 0;
 
 	AVFormatContext* pFormatCtx = NULL;
 
@@ -45,9 +45,9 @@ private:
 
 	uint8_t* buffer = NULL;
 
-	SDL_Window* screen;
-	SDL_Renderer* renderer;
-	SDL_Texture* bmp;
+	SDL_Window* screen = NULL;
+	SDL_Renderer* renderer = NULL;
+	SDL_Texture* bmp = NULL;
 
 	struct SwsContext* sws_ctx = NULL;
 };
