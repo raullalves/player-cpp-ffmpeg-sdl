@@ -91,7 +91,9 @@ int Audio::audio_decode_frame(AVCodecContext* aCodecCtx, uint8_t* audio_buf, int
 
             audio_pkt_data += len1;
             audio_pkt_size -= len1;
+
             data_size = 0;
+
             if (got_frame)
             {
                 int linesize = 1;
@@ -119,21 +121,22 @@ int Audio::audio_decode_frame(AVCodecContext* aCodecCtx, uint8_t* audio_buf, int
 
             int dst_nb_samples = (int)av_rescale_rnd(swr_get_delay(swr_ctx, frame.sample_rate) + frame.nb_samples,
                 wanted_frame.sample_rate, wanted_frame.format, AV_ROUND_INF);
+
             int len2 = swr_convert(swr_ctx, &audio_buf, dst_nb_samples,
                 (const uint8_t**)frame.data, frame.nb_samples);
             if (len2 < 0)
                 Utils::display_exception("swr_convert failed");
 
-            return wanted_frame.channels * len2 * av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
-
-            if (data_size <= 0)
-                continue;
-
-            return data_size;
-        }
-
-        if (pkt.data)
             av_packet_unref(&pkt);
+
+            if (swr_ctx)
+            {
+                swr_free(&swr_ctx);
+                swr_ctx = NULL;
+            }
+
+            return wanted_frame.channels * len2 * av_get_bytes_per_sample(AV_SAMPLE_FMT_S16);
+        }
 
         if (Player::get_instance()->getAudioPacket(&audioq, &pkt, 1) < 0)
             return -1;
