@@ -17,9 +17,7 @@ public:
 
 	typedef std::function<SDL_AudioCallback(void*, Uint8*, int)> Audio_Callback;
 
-	static void static_audio_callback(Audio* ptr, void* userdata, Uint8* stream, int len) {
-		ptr->audio_callback(userdata, stream, len);
-	}
+	static void static_audio_callback(Audio*, void*, Uint8*, int);
 
 private:
 	Audio() {}

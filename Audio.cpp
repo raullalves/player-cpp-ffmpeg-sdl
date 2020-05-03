@@ -20,7 +20,6 @@ void Audio::open()
 
     init_audio_packet(&audioq);
     SDL_PauseAudio(0);
-
 }
 
 void Audio::init_audio_packet(AudioPacket* q)
@@ -33,6 +32,8 @@ void Audio::init_audio_packet(AudioPacket* q)
 
 void Audio::malloc(AVCodecContext* pCodecAudioCtx)
 {
+    AudioCallback::set_audio_instance(this);
+
     swrCtx = swr_alloc();
     if (swrCtx == NULL)
         Utils::display_exception("Failed to load audio");
@@ -57,7 +58,11 @@ void Audio::malloc(AVCodecContext* pCodecAudioCtx)
     wantedSpec.silence = 0;
     wantedSpec.samples = SDL_AUDIO_BUFFER_SIZE;
     wantedSpec.userdata = pCodecAudioCtx;
-    wantedSpec.callback = (SDL_AudioCallback)(Audio::static_audio_callback, this);
+    wantedSpec.callback = AudioCallback::audio_callback;
+}
+
+void Audio::static_audio_callback(Audio* ptr, void* userdata, Uint8* stream, int len) {
+    ptr->audio_callback(userdata, stream, len);
 }
 
 void Audio::audio_callback(void* userdata, Uint8* stream, int len)

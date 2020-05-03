@@ -140,7 +140,6 @@ Alloc memory for the display
 */
 int Player::malloc(void)
 {
-
 	Audio::get_instance()->malloc(pCodecAudioCtx);
 
 	Audio::get_instance()->open();
@@ -271,7 +270,6 @@ int Player::create_display(void)
 			pCodecCtx->width, pCodecCtx->height,
 			SDL_WINDOW_OPENGL);
 	
-
 	if (!screen) {
 		cout << "N�o foi possivel setar a screen com o v�deo desse tamannho" << endl;
 		return -1;
