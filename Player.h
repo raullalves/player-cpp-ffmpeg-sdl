@@ -25,10 +25,6 @@ private:
 
 	int read_audio_video_codec(void);
 
-	void init_audio_packet(AudioPacket *);
-
-	int put_audio_packet(AudioPacket *, AVPacket *);
-
 	std::string video_addr;
 
 	int videoStream;
@@ -46,8 +42,6 @@ private:
 	AVCodec* pAudioCodec = NULL;
 	AVFrame* pFrame = NULL;
 	AVFrame* pFrameRGB = NULL;
-
-	SDL_AudioSpec wantedSpec = { 0 }, audioSpec = { 0 };
 
 	uint8_t* buffer = NULL;
 
