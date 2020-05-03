@@ -153,11 +153,11 @@ int Player::malloc(void)
 	if (pFrameRGB == NULL)
 		Utils::display_exception("Couldnt allocate rgb frame memory");
 
-	int numBytes = av_image_get_buffer_size(FORMATO, pCodecCtx->width, pCodecCtx->height,1);
+	int numBytes = av_image_get_buffer_size(VIDEO_FORMAT, pCodecCtx->width, pCodecCtx->height,1);
 
 	buffer = (uint8_t *)av_malloc(numBytes*sizeof(uint8_t));
 
-	int res = av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, buffer, FORMATO, pCodecCtx->width, pCodecCtx->height, 1);
+	int res = av_image_fill_arrays(pFrameRGB->data, pFrameRGB->linesize, buffer, VIDEO_FORMAT, pCodecCtx->width, pCodecCtx->height, 1);
 	if (res < 0)
 		Utils::display_ffmpeg_exception(res);
 	
@@ -218,7 +218,7 @@ int Player::display_video(void) {
 		pCodecCtx->pix_fmt,
 		pCodecCtx->width,
 		pCodecCtx->height,
-		FORMATO,
+		VIDEO_FORMAT,
 		SWS_BILINEAR,
 		NULL,
 		NULL,
@@ -251,6 +251,8 @@ int Player::display_video(void) {
 		}
 
 		SDL_PollEvent(&evt);
+
+		av_packet_unref(&packet);
 	}
 
 	return 1;
